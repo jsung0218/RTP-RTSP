@@ -1,5 +1,6 @@
-from Tkinter import *
-import tkMessageBox
+from tkinter import *
+# import tkinter
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import socket, threading, sys, traceback, os
 
@@ -100,7 +101,7 @@ class Client:
                     rtpPacket.decode(data)
 
                     currFrameNbr = rtpPacket.seqNum()
-                    print "Current Seq Num: " + str(currFrameNbr)
+                    print ("Current Seq Num: " + str(currFrameNbr))
 
                     if currFrameNbr > self.frameNbr: # Discard the late packet
                         self.frameNbr = currFrameNbr
@@ -138,7 +139,7 @@ class Client:
         try:
             self.rtspSocket.connect((self.serverAddr, self.serverPort))
         except:
-            tkMessageBox.showwarning('Connection Failed', 'Connection to \'%s\' failed.' %self.serverAddr)
+            messagebox.showwarning('Connection Failed', 'Connection to \'%s\' failed.' %self.serverAddr)
 
     def sendRtspRequest(self, requestCode):
         """Send RTSP request to the server."""
@@ -156,7 +157,7 @@ class Client:
             request = "SETUP " + self.fileName + " RTSP/1.0\n"
             request += "CSeq: " + str(self.rtspSeq) + "\n"
             request += "Transport: RTP/UDP; client_port= " + str(self.rtpPort)
-            # print(request)
+            print(request)
 
             # Keep track of the sent request.
             self.requestSent = self.SETUP
@@ -185,6 +186,7 @@ class Client:
             request += "CSeq: " + str(self.rtspSeq) + "\n"
             request += "Session: " + str(self.sessionId)
 
+
             # Keep track of the sent request.
             self.requestSent = self.PAUSE
             pass
@@ -206,8 +208,8 @@ class Client:
             return
 
         # Send the RTSP request using rtspSocket.
-        self.rtspSocket.send(request)
-        print '\nData sent:\n' + request
+        self.rtspSocket.send(request.encode())
+        print ('\nData sent:\n' + request)
 
     def recvRtspReply(self):
         """Receive RTSP reply from the server."""
@@ -225,7 +227,7 @@ class Client:
 
     def parseRtspReply(self, data):
         """Parse the RTSP reply from the server."""
-        lines = data.split('\n')
+        lines = data.decode().split('\n')
         seqNum = int(lines[1].split(' ')[1])
 
         # Process only if the server reply's sequence number is the same as the request's
@@ -277,12 +279,12 @@ class Client:
             self.rtpSocket.bind(('', self.rtpPort))
             # self.rtpSocket.listen(5)  # listen(1) ?
         except:
-            tkMessageBox.showwarning('Unable to Bind', 'Unable to bind PORT=%d' %self.rtpPort)
+            messagebox.showwarning('Unable to Bind', 'Unable to bind PORT=%d' %self.rtpPort)
 
     def handler(self):
         """Handler on explicitly closing the GUI window."""
         self.pauseMovie()
-        if tkMessageBox.askokcancel("Quit?", "Are you sure you want to quit?"):
+        if messagebox.askokcancel("Quit?", "Are you sure you want to quit?"):
             self.exitClient()
         else: # When the user presses cancel, resume playing.
             self.playMovie()

@@ -1,5 +1,5 @@
 import sys
-from Tkinter import Tk
+from tkinter import Tk
 from Client import Client
 
 if __name__ == "__main__":
@@ -9,7 +9,7 @@ if __name__ == "__main__":
         rtpPort = sys.argv[3]
         fileName = sys.argv[4]
     except:
-        print "[Usage: ClientLauncher.py Server_name Server_port RTP_port Video_file]\n"
+        print ("[Usage: ClientLauncher.py Server_name Server_port RTP_port Video_file]\n")
 
     root = Tk()
 
